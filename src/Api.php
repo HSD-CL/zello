@@ -458,9 +458,10 @@ class Api
      * @param $command
      * @param array $data
      * @param false $returnRawRes
+     * @param string|null $params
      * @return bool|string
      */
-    private function callAPI($command, $data = [], $returnRawRes = false)
+    private function callAPI($command, $data = [], $returnRawRes = false, string $params = null)
     {
         $this->data = [];
         $pref = "http://";
@@ -473,6 +474,9 @@ class Api
         $url = $pref . $this->host . "/" . $command . "?rnd=" . $this->makeId();
         if ($this->sid) {
             $url .= "&sid=" . $this->sid;
+        }
+        if (!empty($params)) {
+            $url .= '&' . $params;
         }
         $this->lastUrl = $url;
         $rawRes = $this->sendRequest($url, $data);
@@ -564,5 +568,40 @@ class Api
         }
 
         return $out;
+    }
+
+    /**
+     * @param array $northeast
+     * @param array $southwest
+     * @param string|null $name
+     * @param string|null $filter
+     * @param int|null $start
+     * @param int $max
+     * @version 24/2/21
+     * @author  David Lopez <dlopez@hsd.cl>
+     */
+    public function getLocations(array $northeast, array $southwest, string $name = null, string $filter = null,
+                                 int $start = null, int $max = null)
+    {
+        $url = "location/get";
+
+        $query = urlencode("northeast[]") . '=' . implode("&" . urlencode("northeast[]") . '=', $northeast);
+        $query .= '&' . urlencode("southwest[]") . '=' . implode("&" . urlencode("southwest[]") . '=', $southwest);
+        $params = [];
+        if (!empty($name)) {
+            $params['name'] = $name;
+        }
+        if (!empty($filter)) {
+            $params['filter'] = $filter;
+        }
+        if (!empty($start)) {
+            $params['start'] = $start;
+        }
+        if (!empty($max)) {
+            $params['max'] = $max;
+        }
+        $query .= http_build_query($params);
+
+        return $this->callAPI($url, [], false, $query);
     }
 }

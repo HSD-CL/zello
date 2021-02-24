@@ -1,0 +1,17 @@
+{
+    "name": "hsd-cl/zello",
+    "description": "Zello Lib for PHP",
+    "type": "library",
+    "require": {
+        "php": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {"Hsd\\Zello\\": "src/"}
+    },
+    "authors": [
+        {
+            "name": "David Lopez",
+            "email": "dleo.lopez@gmail.com"
+        }
+    ]
+}

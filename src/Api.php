@@ -604,4 +604,43 @@ class Api
 
         return $this->callAPI($url, [], false, $query);
     }
+
+    /**
+     * Retrieves current location data for users in your network based on given query criteria.
+     * @param string $userName Username of the user whose location data to retrieve
+     * @param int $startTs 	For history, the unix timestamp of the start date and time to retrieve history
+     * @param int $endTs For history, the unix timestamp of the end date and time to retrieve history
+     * @param string $format (Optional) For history, the response format. The only supported value is geojson, which will return locations as a GeoJson feature collection.
+     * @param string $speedUnits (Optional) For history, the units for speed values. Supported values are mph (miles per hour) and kmh (kilometers per hour). If no units are specified, kilometers per hour is the default.
+     * @param int|null $start (Optional) The starting index of results to return, 0-based. Defaults to 0
+     * @param int|null $max (Optional) The maximum number of results to return. Defaults to a system page size, usually 100
+     * @version 1/3/21
+     * @author  David Lopez <dlopez@hsd.cl>
+     */
+    public function getLocationUser(string $userName, int $startTs, int $endTs, string $format = null,
+                                    string $speedUnits = null, int $start = null, int $max = null)
+    {
+        # Build the url
+        $url = "location/getuser/{$userName}/history";
+        # Build the params
+        $params = [
+            'start_ts' => $startTs,
+            'end_ts'   => $endTs
+        ];
+        if (!empty($format)) {
+            $params['format'] = $format;
+        }
+        if (!empty($speedUnits)) {
+            $params['speedUnits'] = $speedUnits;
+        }
+        if (!empty($start)) {
+            $params['start'] = $start;
+        }
+        if (!empty($max)) {
+            $params['max'] = $max;
+        }
+        $query = http_build_query($params);
+
+        return $this->callAPI($url, [], false, $query);
+    }
 }

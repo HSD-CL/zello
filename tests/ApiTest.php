@@ -57,13 +57,31 @@ class ApiTest extends TestCase
     {
         $northeast = [
             "-30.708945",
-            "-70.899361"
+            "-70.89936"
         ];
         $southwest = [
             "-30.720996",
             "-70.916227"
         ];
         $this->assertTrue($api->getLocations($northeast, $southwest));
-        var_dump(json_encode($api->data));
+    }
+
+    /**
+     * @param Api $api
+     * @author David Lopez <dleo.lopez@gmail.com>
+     * @depends testCanAuth
+     */
+    public function testCanGetLocationUser(Api $api)
+    {
+        # Call users resource
+        $this->assertTrue($api->getUsers());
+        $yesterday = new \DateTime();
+        $yesterday->modify('-1 day');
+        $today = new \DateTime();
+        $user = array_shift($api->data['users'])['name'];
+        $this->assertTrue($api->getLocationUser($user,
+            $yesterday->getTimestamp(),
+            $today->getTimestamp()
+        ));
     }
 }
